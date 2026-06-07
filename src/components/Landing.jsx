@@ -46,6 +46,20 @@ export default function Landing({
       >
         Yes — Start Quiz
       </button>
+
+      <div className="mt-8 rounded-xl border border-stone-200 bg-stone-50 p-5">
+        <p className="text-xs font-semibold uppercase tracking-widest text-stone-400">
+          A message from the developer
+        </p>
+        <p className="mt-2 text-sm text-stone-600">
+          I built this to show off my skills — if you're reading this, hi! 👋
+          Also: a Moscow Mule is served in a copper cup. That's not optional.
+        </p>
+        <p className="mt-3 text-xs text-stone-400">
+          I take no responsibility for the content or usage of this website.
+          Use at your own risk.
+        </p>
+      </div>
     </div>
   );
 }
