@@ -7,6 +7,24 @@ function fmt(ing) {
   return `${amt} ${ing.unit || ""}`.trim();
 }
 
+function fmtList(val) {
+  if (Array.isArray(val)) return val.length ? val.join(", ") : "—";
+  return val || "—";
+}
+
+function FieldRow({ label, grade }) {
+  return (
+    <tr>
+      <td className="py-2 pr-2 text-stone-800">{label}</td>
+      <td className={`py-2 pr-2 ${grade.correct ? "text-stone-600" : "text-red-600"}`}>
+        {fmtList(grade.got)}
+      </td>
+      <td className="py-2 pr-2 text-stone-600">{fmtList(grade.expected)}</td>
+      <td className="py-2 text-right">{grade.correct ? "✅" : "❌"}</td>
+    </tr>
+  );
+}
+
 function RecipeCard({ recipe, grade }) {
   return (
     <div className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm">
@@ -26,7 +44,7 @@ function RecipeCard({ recipe, grade }) {
       <table className="mt-4 w-full text-sm">
         <thead>
           <tr className="text-left text-xs uppercase tracking-wide text-stone-400">
-            <th className="pb-2 font-semibold">Ingredient</th>
+            <th className="pb-2 font-semibold">Field</th>
             <th className="pb-2 font-semibold">You entered</th>
             <th className="pb-2 font-semibold">Correct</th>
             <th className="pb-2 font-semibold text-right">Result</th>
@@ -51,6 +69,18 @@ function RecipeCard({ recipe, grade }) {
               <td className="py-2 text-right">➖</td>
             </tr>
           ))}
+          {grade.glassResult && (
+            <FieldRow label="Glass" grade={grade.glassResult} />
+          )}
+          {grade.garnishResult && (
+            <FieldRow label="Garnish" grade={grade.garnishResult} />
+          )}
+          {grade.iceResult && (
+            <FieldRow label="Ice" grade={grade.iceResult} />
+          )}
+          {grade.methodResult && (
+            <FieldRow label="Method" grade={grade.methodResult} />
+          )}
         </tbody>
       </table>
     </div>

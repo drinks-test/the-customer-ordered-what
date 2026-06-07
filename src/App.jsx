@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import schemaData from "../schema.json";
 import recipesData from "../recipes.json";
-import { getIngredientNames, getUnits } from "./lib/schema.js";
+import { getIngredientNames, getUnits, getGlasses, getMethods, getGarnishes, getIce } from "./lib/schema.js";
 import { gradeQuiz } from "./lib/grading.js";
 import Landing from "./components/Landing.jsx";
 import Quiz from "./components/Quiz.jsx";
@@ -19,6 +19,10 @@ function shuffle(arr) {
 export default function App() {
   const ingredientNames = useMemo(() => getIngredientNames(schemaData), []);
   const units = useMemo(() => getUnits(schemaData), []);
+  const glasses = useMemo(() => getGlasses(schemaData), []);
+  const garnishes = useMemo(() => getGarnishes(schemaData), []);
+  const iceOptions = useMemo(() => getIce(schemaData), []);
+  const methods = useMemo(() => getMethods(schemaData), []);
   const maxQuestions = recipesData.length;
 
   const [phase, setPhase] = useState("landing");
@@ -82,6 +86,10 @@ export default function App() {
             elapsed={elapsed}
             ingredientNames={ingredientNames}
             units={units}
+            glasses={glasses}
+            garnishes={garnishes}
+            iceOptions={iceOptions}
+            methods={methods}
             onSubmit={handleSubmit}
           />
         )}

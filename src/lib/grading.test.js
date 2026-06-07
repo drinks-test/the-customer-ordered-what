@@ -7,6 +7,8 @@ import {
   getUnits,
   getGlasses,
   getMethods,
+  getGarnishes,
+  getIce,
 } from "./schema.js";
 
 const schema = JSON.parse(readFileSync("./schema.json", "utf8"));
@@ -18,6 +20,8 @@ test("schema helpers expose the contract enums", () => {
   assert.deepEqual(getUnits(schema), ["ml", "dash"]);
   assert.ok(getGlasses(schema).includes("Highball"));
   assert.ok(getMethods(schema).includes("Shake & Strain"));
+  assert.ok(getGarnishes(schema).includes("Mint Sprig"));
+  assert.ok(getIce(schema).includes("Crushed"));
 });
 
 // ── every ingredient in recipes.json is a valid schema enum value ────────────
@@ -80,6 +84,91 @@ test("gradeQuiz and totals aggregate every recipe", () => {
   const graded = gradeQuiz(submissions, recipes);
   const summary = totals(graded);
   assert.equal(summary.recipes, recipes.length);
+  assert.equal(summary.perfect, recipes.length);
+  assert.equal(summary.correct, summary.total);
+});
+
+// ── full submission (ingredients + glass + garnish + ice + method) ────────────
+test("full submission with all fields correct scores 1.0", () => {
+  const recipe = recipes[0]; // ZOMBIE
+  const submission = {
+    ingredients: recipe.ingredients,
+    glass: recipe.glass,
+    garnish: recipe.garnish ?? [],
+    ice: recipe.ice,
+    method: recipe.method,
+  };
+  const grade = gradeRecipe(submission, recipe);
+  assert.equal(grade.score, 1);
+  assert.equal(grade.correctCount, grade.total);
+  assert.equal(grade.glassResult.correct, true);
+  assert.equal(grade.garnishResult.correct, true);
+  assert.equal(grade.iceResult.correct, true);
+  assert.equal(grade.methodResult.correct, true);
+});
+
+test("wrong glass selection fails glassResult", () => {
+  const recipe = recipes[0]; // ZOMBIE — glass: ["Highball", "Tiki Mug"]
+  const submission = {
+    ingredients: recipe.ingredients,
+    glass: ["Highball"], // missing Tiki Mug
+    garnish: recipe.garnish ?? [],
+    ice: recipe.ice,
+    method: recipe.method,
+  };
+  const grade = gradeRecipe(submission, recipe);
+  assert.equal(grade.glassResult.correct, false);
+});
+
+test("wrong garnish selection fails garnishResult", () => {
+  const recipe = recipes[0]; // ZOMBIE — garnish: ["Mint Sprig"]
+  const submission = {
+    ingredients: recipe.ingredients,
+    glass: recipe.glass,
+    garnish: ["Cherry"], // wrong garnish
+    ice: recipe.ice,
+    method: recipe.method,
+  };
+  const grade = gradeRecipe(submission, recipe);
+  assert.equal(grade.garnishResult.correct, false);
+});
+
+test("wrong ice fails iceResult", () => {
+  const recipe = recipes[0]; // ZOMBIE — ice: "Crushed"
+  const submission = {
+    ingredients: recipe.ingredients,
+    glass: recipe.glass,
+    garnish: recipe.garnish ?? [],
+    ice: "Cubed", // wrong
+    method: recipe.method,
+  };
+  const grade = gradeRecipe(submission, recipe);
+  assert.equal(grade.iceResult.correct, false);
+});
+
+test("wrong method fails methodResult", () => {
+  const recipe = recipes[2]; // LEMON DROP — method: "Shake & Fine Strain"
+  const submission = {
+    ingredients: recipe.ingredients,
+    glass: recipe.glass,
+    garnish: recipe.garnish ?? [],
+    ice: recipe.ice,
+    method: "Shake & Strain", // wrong
+  };
+  const grade = gradeRecipe(submission, recipe);
+  assert.equal(grade.methodResult.correct, false);
+});
+
+test("full gradeQuiz with full submissions scores perfectly", () => {
+  const submissions = recipes.map((r) => ({
+    ingredients: r.ingredients,
+    glass: r.glass,
+    garnish: r.garnish ?? [],
+    ice: r.ice,
+    method: r.method,
+  }));
+  const graded = gradeQuiz(submissions, recipes);
+  const summary = totals(graded);
   assert.equal(summary.perfect, recipes.length);
   assert.equal(summary.correct, summary.total);
 });

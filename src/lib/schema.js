@@ -21,3 +21,11 @@ export function getGlasses(schema) {
 export function getMethods(schema) {
   return schema?.items?.properties?.method?.enum ?? [];
 }
+
+export function getGarnishes(schema) {
+  return schema?.items?.properties?.garnish?.items?.enum ?? [];
+}
+
+export function getIce(schema) {
+  return schema?.items?.properties?.ice?.enum ?? [];
+}
