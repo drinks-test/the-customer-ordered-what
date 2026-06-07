@@ -1,0 +1,123 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Cocktail Recipes Data Contract",
+  "description": "This file acts as the ultimate source of truth (Data Contract) for your cocktail data. Use this schema file to validate your JSON data in your automated tests (e.g., using Ajv) before building your UI. It enforces strict Enum typing for glasses, ice, methods, ingredients, and garnishes.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "glass": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": [
+            "Highball",
+            "Tiki Mug",
+            "Hurricane",
+            "Shooter"
+          ]
+        }
+      },
+      "ice": {
+        "type": "string",
+        "enum": [
+          "Crushed",
+          "Cubed",
+          "None"
+        ]
+      },
+      "method": {
+        "type": "string",
+        "enum": [
+          "Shake & Strain",
+          "Shake & Fine Strain"
+        ]
+      },
+      "ingredients": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "enum": [
+                "Aromatic Bitters",
+                "Absinthe",
+                "Overproof Rum",
+                "Grenadine",
+                "Dark Rum",
+                "Light Rum",
+                "Fresh Lime Juice",
+                "Cinnamon Syrup",
+                "Grapefruit Juice",
+                "Coconut Liqueur",
+                "Pineapple Juice",
+                "Coco Re'al Coconut Cream",
+                "Vodka",
+                "Fresh Lemon Juice",
+                "Sugar Syrup"
+              ]
+            },
+            "amount": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "unit": {
+              "type": "string",
+              "enum": [
+                "ml",
+                "dash"
+              ]
+            }
+          },
+          "required": [
+            "name",
+            "amount",
+            "unit"
+          ]
+        },
+        "minItems": 1
+      },
+      "garnish": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": [
+            "Mint Sprig",
+            "Pineapple Wedge",
+            "Cherry",
+            "Sugar coated lemon wedge"
+          ]
+        }
+      },
+      "optionalNotes": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "tastingNotes": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "required": [
+      "id",
+      "name",
+      "glass",
+      "ice",
+      "method",
+      "ingredients"
+    ]
+  }
+}
