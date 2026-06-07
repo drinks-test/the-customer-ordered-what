@@ -7,6 +7,7 @@ import Landing from "./components/Landing.jsx";
 import Quiz from "./components/Quiz.jsx";
 import Results from "./components/Results.jsx";
 import SchemaEditor from "./components/SchemaEditor.jsx";
+import RecipeEditor from "./components/RecipeEditor.jsx";
 
 function shuffle(arr) {
   const a = [...arr];
@@ -82,6 +83,10 @@ export default function App() {
 
   if (hash === "#schema-editor") {
     return <SchemaEditor schema={schemaData} />;
+  }
+
+  if (hash === "#recipe-editor") {
+    return <RecipeEditor schema={schemaData} recipes={recipesData} />;
   }
 
   return (
