@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import Ajv from "ajv";
+import { getEnums, buildSchema } from "./src/lib/schema.js";
 
 const schema = JSON.parse(readFileSync("./schema.json", "utf8"));
 const recipes = JSON.parse(readFileSync("./recipes.json", "utf8"));
@@ -26,6 +27,13 @@ test("every recipe has a unique id", () => {
   const ids = recipes.map((r) => r.id);
   const unique = new Set(ids);
   assert.equal(unique.size, ids.length, `Duplicate ids found: ${ids}`);
+});
+
+// ── Test: schema rebuilt by the editor (buildSchema) is a usable contract ────
+test("schema rebuilt from current enums compiles and validates recipes", () => {
+  const rebuilt = buildSchema(schema, getEnums(schema));
+  const validateRebuilt = ajv.compile(rebuilt);
+  assert.ok(validateRebuilt(recipes), "rebuilt schema rejected valid recipes");
 });
 
 // ── Test 3: every recipe has at least one ingredient ─────────────────────────

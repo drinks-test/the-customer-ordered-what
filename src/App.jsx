@@ -6,6 +6,7 @@ import { gradeQuiz } from "./lib/grading.js";
 import Landing from "./components/Landing.jsx";
 import Quiz from "./components/Quiz.jsx";
 import Results from "./components/Results.jsx";
+import SchemaEditor from "./components/SchemaEditor.jsx";
 
 function shuffle(arr) {
   const a = [...arr];
@@ -26,6 +27,18 @@ export default function App() {
   const iceOptions = useMemo(() => shuffle(getIce(schemaData)), []);
   const methods = useMemo(() => shuffle(getMethods(schemaData)), []);
   const maxQuestions = recipesData.length;
+
+  // Hidden route: #schema-editor opens the data-contract editor. It isn't linked
+  // from the quiz UI, so it's only reachable by typing the hash in the URL.
+  const [hash, setHash] = useState(() =>
+    typeof window === "undefined" ? "" : window.location.hash
+  );
+
+  useEffect(() => {
+    const onHashChange = () => setHash(window.location.hash);
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
 
   const [phase, setPhase] = useState("landing");
   const [numQuestions, setNumQuestions] = useState(Math.min(2, maxQuestions));
@@ -65,6 +78,10 @@ export default function App() {
       setGraded(gradeQuiz(next, quizRecipes));
       setPhase("results");
     }
+  }
+
+  if (hash === "#schema-editor") {
+    return <SchemaEditor schema={schemaData} />;
   }
 
   return (

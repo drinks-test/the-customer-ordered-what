@@ -9,6 +9,8 @@ import {
   getMethods,
   getGarnishes,
   getIce,
+  getEnums,
+  buildSchema,
 } from "./schema.js";
 
 const schema = JSON.parse(readFileSync("./schema.json", "utf8"));
@@ -22,6 +24,40 @@ test("schema helpers expose the contract enums", () => {
   assert.ok(getMethods(schema).includes("Shake & Strain"));
   assert.ok(getGarnishes(schema).includes("Mint Sprig"));
   assert.ok(getIce(schema).includes("Crushed"));
+});
+
+// ── getEnums returns every category, matching the individual helpers ─────────
+test("getEnums exposes all six contract categories", () => {
+  const enums = getEnums(schema);
+  assert.deepEqual(enums.glass, getGlasses(schema));
+  assert.deepEqual(enums.ice, getIce(schema));
+  assert.deepEqual(enums.method, getMethods(schema));
+  assert.deepEqual(enums.ingredients, getIngredientNames(schema));
+  assert.deepEqual(enums.units, getUnits(schema));
+  assert.deepEqual(enums.garnish, getGarnishes(schema));
+});
+
+// ── buildSchema round-trips the current contract unchanged ───────────────────
+test("buildSchema with the current enums reproduces schema.json exactly", () => {
+  const rebuilt = buildSchema(schema, getEnums(schema));
+  assert.deepEqual(rebuilt, schema);
+});
+
+// ── buildSchema applies adds/renames/removes without touching the base ───────
+test("buildSchema injects edited enums in the right places", () => {
+  const enums = getEnums(schema);
+  const edited = {
+    ...enums,
+    glass: [...enums.glass, "Coupe"], // add
+    units: ["ml", "oz"], // rename "dash" → "oz"
+    garnish: enums.garnish.slice(1), // remove first
+  };
+  const rebuilt = buildSchema(schema, edited);
+  assert.deepEqual(getGlasses(rebuilt), [...enums.glass, "Coupe"]);
+  assert.deepEqual(getUnits(rebuilt), ["ml", "oz"]);
+  assert.deepEqual(getGarnishes(rebuilt), enums.garnish.slice(1));
+  // The original schema object must be untouched (deep clone).
+  assert.deepEqual(getGlasses(schema), enums.glass);
 });
 
 // ── every ingredient in recipes.json is a valid schema enum value ────────────
