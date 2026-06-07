@@ -1,5 +1,6 @@
 import { useState } from "react";
 import IngredientRow from "./IngredientRow.jsx";
+import InfoTip from "./InfoTip.jsx";
 import { formatTime } from "../lib/format.js";
 
 const emptyRow = () => ({ name: "", amount: "", unit: "" });
@@ -68,7 +69,10 @@ export default function Quiz({
       </p>
 
       <div className="mt-6 grid grid-cols-12 gap-2 px-1 text-xs font-semibold uppercase tracking-wide text-stone-400">
-        <div className="col-span-6">Ingredient</div>
+        <div className="col-span-6">
+          Ingredient
+          <InfoTip en="What goes in the drink." es="Lo que lleva la bebida." />
+        </div>
         <div className="col-span-2">Amount</div>
         <div className="col-span-3">Unit</div>
         <div className="col-span-1" />
@@ -98,7 +102,10 @@ export default function Quiz({
 
       {/* ── Glass ── */}
       <div className="mt-6 border-t border-stone-100 pt-5">
-        <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">Glass</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">
+          Glass
+          <InfoTip en="The glass it's served in." es="El vaso en que se sirve." />
+        </p>
         <div className="mt-2 flex flex-wrap gap-4">
           {glasses.map((g) => (
             <label key={g} className="flex cursor-pointer items-center gap-2 text-sm text-stone-700">
@@ -116,7 +123,10 @@ export default function Quiz({
 
       {/* ── Garnish ── */}
       <div className="mt-4">
-        <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">Garnish</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">
+          Garnish
+          <InfoTip en="Decoration on the drink." es="Decoración de la bebida." />
+        </p>
         <div className="mt-2 flex flex-wrap gap-4">
           {garnishes.map((g) => (
             <label key={g} className="flex cursor-pointer items-center gap-2 text-sm text-stone-700">
@@ -135,7 +145,10 @@ export default function Quiz({
       {/* ── Ice + Method ── */}
       <div className="mt-4 grid grid-cols-2 gap-4">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">Ice</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">
+            Ice
+            <InfoTip en="Type of ice used." es="Tipo de hielo usado." />
+          </p>
           <select
             value={selectedIce}
             onChange={(e) => setSelectedIce(e.target.value)}
@@ -148,7 +161,10 @@ export default function Quiz({
           </select>
         </div>
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">Method</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">
+            Method
+            <InfoTip en="How it's mixed." es="Cómo se mezcla." />
+          </p>
           <select
             value={selectedMethod}
             onChange={(e) => setSelectedMethod(e.target.value)}

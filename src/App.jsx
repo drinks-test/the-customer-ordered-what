@@ -19,10 +19,12 @@ function shuffle(arr) {
 export default function App() {
   const ingredientNames = useMemo(() => getIngredientNames(schemaData), []);
   const units = useMemo(() => getUnits(schemaData), []);
-  const glasses = useMemo(() => getGlasses(schemaData), []);
-  const garnishes = useMemo(() => getGarnishes(schemaData), []);
-  const iceOptions = useMemo(() => getIce(schemaData), []);
-  const methods = useMemo(() => getMethods(schemaData), []);
+  // Shuffle the enum order once per site load so options aren't always listed
+  // in the same fixed order. Grading is order-independent, so this is safe.
+  const glasses = useMemo(() => shuffle(getGlasses(schemaData)), []);
+  const garnishes = useMemo(() => shuffle(getGarnishes(schemaData)), []);
+  const iceOptions = useMemo(() => shuffle(getIce(schemaData)), []);
+  const methods = useMemo(() => shuffle(getMethods(schemaData)), []);
   const maxQuestions = recipesData.length;
 
   const [phase, setPhase] = useState("landing");
